@@ -40,7 +40,18 @@ services:
       depends_on:
           - db
 
-  # Frontend Build and Nginx (Web Server)
+  # Frontend Build Service (Runs once to build React app)
+  frontend-build:
+      build:
+          context: ./client/frontend
+          dockerfile: Dockerfile
+      container_name: travel-frontend-build
+      volumes:
+          - frontend-dist:/app/dist
+      networks:
+          - travel-network
+
+  # Nginx (Web Server)
   web:
       image: nginx:alpine
       container_name: travel-web
@@ -53,13 +64,14 @@ services:
           - 8.8.4.4
       volumes:
           - ./client/backend:/var/www/backend
-          - ./client/frontend/dist:/var/www/frontend
+          - frontend-dist:/var/www/frontend
           - ./.docker/nginx/conf.d:/etc/nginx/conf.d
-          - ssl-certs:/etc/nginx/ssl
+          - ./.docker/nginx/ssl:/etc/nginx/ssl
       networks:
           - travel-network
       depends_on:
           - app
+          - frontend-build
 
 networks:
   travel-network:
@@ -67,4 +79,4 @@ networks:
 
 volumes:
   db-data:
-  ssl-certs:
+  frontend-dist:
