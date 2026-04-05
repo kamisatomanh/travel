@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+      image: mysql:8.0
+      container_name: travel-db
+      restart: always
+      environment:
+          MYSQL_DATABASE: ${DB_DATABASE:-travel_db}
+          MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root_password}
+          MYSQL_PASSWORD: ${DB_PASSWORD:-root_password}
+          MYSQL_USER: ${DB_USERNAME:-travel_user}
+      volumes:
+          - db-data:/var/lib/mysql
+      networks:
+          - travel-network
+
+  # Laravel Backend (PHP-FPM)
+  app:
+      build:
+          context: ./client/backend
+          dockerfile: Dockerfile
+      container_name: travel-app
+      restart: always
+      environment:
+          APP_ENV: production
+          DB_HOST: db
+          DB_PORT: 3306
+          DB_DATABASE: ${DB_DATABASE:-travel_db}
+          DB_USERNAME: ${DB_USERNAME:-travel_user}
+          DB_PASSWORD: ${DB_PASSWORD:-root_password}
+      volumes:
+          - ./client/backend:/var/www
+      networks:
+          - travel-network
+      depends_on:
+          - db
+
+  # Frontend Build and Nginx (Web Server)
+  web:
+      image: nginx:alpine
+      container_name: travel-web
+      restart: always
+      ports:
+          - "80:80"
+          - "443:443"
+      volumes:
+          - ./client/backend:/var/www/backend
+          - ./client/frontend/dist:/var/www/frontend
+          - ./.docker/nginx/conf.d:/etc/nginx/conf.d
+          - ssl-certs:/etc/nginx/ssl
+      networks:
+          - travel-network
+      depends_on:
+          - app
+
+networks:
+  travel-network:
+      driver: bridge
+
+volumes:
+  db-data:
+  ssl-certs:

@@ -1,85 +1,53 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api';
-
-// Get token from localStorage
-const getToken = () => localStorage.getItem('token');
+import axiosClient from './axiosClient';
 
 const bookingAPI = {
   // Complete booking after QR scan
   completeBooking: async (orderId) => {
-    const response = await axios.post(`${API_URL}/bookings/complete/${orderId}`, {}, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.post(`/bookings/complete/${orderId}`);
     return response.data;
   },
 
   // Get purchase history
   getPurchaseHistory: async () => {
-    const response = await axios.get(`${API_URL}/bookings/history`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.get(`/bookings/history`);
     return response.data;
   },
 
   // Get purchase detail
   getPurchaseDetail: async (purchaseId) => {
-    const response = await axios.get(`${API_URL}/bookings/history/${purchaseId}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.get(`/bookings/history/${purchaseId}`);
     return response.data;
   },
 
   // Get all user bookings (pending + completed)
   getAllUserBookings: async () => {
-    const response = await axios.get(`${API_URL}/bookings/all`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.get(`/bookings/all`);
     return response.data;
   },
 
   // Verify booking (public)
   verifyBooking: async (orderId) => {
-    const response = await axios.get(`${API_URL}/bookings/verify/${orderId}`);
+    const response = await axiosClient.get(`/bookings/verify/${orderId}`);
     return response.data;
   },
 
   // Admin: Get all bookings
   getAllBookings: async (params = {}) => {
-    const response = await axios.get(`${API_URL}/admin/bookings`, {
+    const response = await axiosClient.get(`/admin/bookings`, {
       params,
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
     });
     return response.data;
   },
 
   // Admin: Get bookings by item (tour/hotel)
   getBookingsByItem: async (itemType, itemId) => {
-    const response = await axios.get(`${API_URL}/admin/bookings/item/${itemType}/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.get(`/admin/bookings/item/${itemType}/${itemId}`);
     return response.data;
   },
 
   // Admin: Get statistics
   getStats: async () => {
-    const response = await axios.get(`${API_URL}/admin/bookings/stats`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
-    });
+    const response = await axiosClient.get(`/admin/bookings/stats`);
     return response.data;
   },
 
@@ -89,10 +57,7 @@ const bookingAPI = {
     if (dateFrom) params.append('date_from', dateFrom);
     if (dateTo) params.append('date_to', dateTo);
 
-    const response = await axios.get(`${API_URL}/admin/bookings/export?${params}`, {
-      headers: {
-        Authorization: `Bearer ${getToken()}`,
-      },
+    const response = await axiosClient.get(`/admin/bookings/export?${params}`, {
       responseType: 'blob',
     });
     

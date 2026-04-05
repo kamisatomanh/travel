@@ -18,10 +18,10 @@ return new class extends Migration
                 $table->integer('review_count')->default(0)->change();
             }
             
-            $table->json('highlights')->default(json_encode([]))->change();
-            $table->json('includes')->default(json_encode([]))->change();
-            $table->json('itinerary')->default(json_encode([]))->change();
-            $table->json('departure')->default(json_encode([]))->change();
+            $table->json('highlights')->nullable()->change();
+            $table->json('includes')->nullable()->change();
+            $table->json('itinerary')->nullable()->change();
+            $table->json('departure')->nullable()->change();
             $table->integer('max_guests')->default(1)->change();
         });
     }
