@@ -63,7 +63,7 @@ services:
           - 8.8.8.8
           - 8.8.4.4
       volumes:
-          - ./client/backend:/var/www/backend
+          - ./client/backend:/var/www
           - frontend-dist:/var/www/frontend
           - ./.docker/nginx/conf.d:/etc/nginx/conf.d
           - ./.docker/nginx/ssl:/etc/nginx/ssl
