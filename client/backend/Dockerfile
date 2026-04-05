@@ -1,9 +1,6 @@
 FROM php:8.2-fpm
 
-# Use a reliable CDN mirror for faster package installation
-RUN sed -i 's/deb.debian.org/cdn-fastly.deb.debian.org/g' /etc/apt/sources.list || true
-
-# Install system dependencies with no-install-recommends to speed up
+# Rely on the DNS settings in docker-compose.yml to resolve default mirrors
 RUN apt-get update && apt-get install -y \
     git \
     curl \
