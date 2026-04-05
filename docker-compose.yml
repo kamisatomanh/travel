@@ -79,4 +79,5 @@ networks:
 
 volumes:
   db-data:
+  ssl-certs:
   frontend-dist:
