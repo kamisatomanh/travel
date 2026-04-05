@@ -1,6 +1,10 @@
 FROM php:8.2-fpm
 
-# Install system dependencies
+# Fix: Use Vietnam mirror for faster package installation and avoid hanging
+RUN sed -i 's/deb.debian.org/ftp.vn.debian.org/g' /etc/apt/sources.list || \
+    (test -f /etc/apt/sources.list.d/debian.sources && sed -i 's/deb.debian.org/ftp.vn.debian.org/g' /etc/apt/sources.list.d/debian.sources)
+
+# Install system dependencies with no-install-recommends to speed up
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -11,7 +15,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     libzip-dev \
     libjpeg62-turbo-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    --no-install-recommends
 
 # Clear cache
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
