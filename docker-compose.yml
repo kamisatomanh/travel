@@ -23,6 +23,9 @@ services:
           dockerfile: Dockerfile
       container_name: travel-app
       restart: always
+      dns:
+          - 8.8.8.8
+          - 8.8.4.4
       environment:
           APP_ENV: production
           DB_HOST: db
@@ -45,6 +48,9 @@ services:
       ports:
           - "80:80"
           - "443:443"
+      dns:
+          - 8.8.8.8
+          - 8.8.4.4
       volumes:
           - ./client/backend:/var/www/backend
           - ./client/frontend/dist:/var/www/frontend
